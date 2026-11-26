@@ -1,0 +1,144 @@
+{
+  "info": {
+    "name": "Zeleni Asistent API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api/v1" },
+    { "key": "token", "value": "" },
+    { "key": "speciesId", "value": "" },
+    { "key": "plantId", "value": "" },
+    { "key": "sessionId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "url": "http://localhost:3000/health" }
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"email\":\"ime@example.com\",\"password\":\"lozinka123\",\"full_name\":\"Ime Prezime\"}" },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"email\":\"ime@example.com\",\"password\":\"lozinka123\"}" },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/auth/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Plants",
+      "item": [
+        {
+          "name": "List species",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/plants/species" }
+        },
+        {
+          "name": "List my plants",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/plants" }
+        },
+        {
+          "name": "Create plant",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"species_id\":\"{{speciesId}}\",\"nickname\":\"Moja monstera\",\"location\":\"Dnevna soba\",\"light_level\":\"bright_indirect\",\"notes\":\"Listovi su počeli da žute.\"}" },
+            "url": "{{baseUrl}}/plants"
+          }
+        },
+        {
+          "name": "Update plant",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"location\":\"Blizu istočnog prozora\",\"notes\":\"Premještena dalje od radijatora.\"}" },
+            "url": "{{baseUrl}}/plants/{{plantId}}"
+          }
+        },
+        {
+          "name": "Add watering event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"event_type\":\"watering\",\"notes\":\"Zalivena nakon provjere zemlje.\"}" },
+            "url": "{{baseUrl}}/plants/{{plantId}}/care-events"
+          }
+        },
+        {
+          "name": "List plant care history",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/plants/{{plantId}}/care-events" }
+        },
+        {
+          "name": "Delete plant",
+          "request": { "method": "DELETE", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/plants/{{plantId}}" }
+        }
+      ]
+    },
+    {
+      "name": "AI plant-care assistant",
+      "item": [
+        {
+          "name": "Ask about my plant",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"question\":\"Zašto joj žute listovi i šta prvo da provjerim?\",\"plant_id\":\"{{plantId}}\"}" },
+            "url": "{{baseUrl}}/ai/ask"
+          }
+        },
+        {
+          "name": "Continue AI conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\"question\":\"Možeš li mi dati kratku kontrolnu listu?\",\"plant_id\":\"{{plantId}}\",\"session_id\":\"{{sessionId}}\"}" },
+            "url": "{{baseUrl}}/ai/ask"
+          }
+        },
+        {
+          "name": "List AI conversations",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/ai/sessions" }
+        },
+        {
+          "name": "Read conversation messages",
+          "request": { "method": "GET", "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }], "url": "{{baseUrl}}/ai/sessions/{{sessionId}}/messages" }
+        }
+      ]
+    }
+  ]
+}
